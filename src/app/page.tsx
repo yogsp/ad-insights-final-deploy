@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo, FC } from 'react';
+import React, { useState, useCallback, useMemo, FC, useEffect } from 'react';
 import { UploadCloud, FileImage, Palette, Type, Users, Lightbulb, CheckCircle, XCircle, Star, BarChart2, MessageSquare, Monitor } from 'lucide-react';
 
 // --- Type Definitions for TypeScript ---
@@ -34,6 +34,14 @@ interface AnalysisResult {
 // --- Main App Component ---
 const App: FC = () => {
   const [activeTab, setActiveTab] = useState('analyzer');
+
+  // This useEffect hook ensures that the style tag is only appended on the client-side.
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = ` @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } .animate-fade-in { animation: fade-in 0.5s ease-out forwards; } `;
+    document.head.append(style);
+  }, []);
+
 
   return (
     <div className="bg-slate-50 min-h-screen font-sans text-slate-800">
@@ -127,19 +135,24 @@ const AdAnalyzer: FC = () => {
     const [isDragging, setIsDragging] = useState(false);
     const [platform, setPlatform] = useState('social');
     
-    const [apiKey, setApiKey] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('geminiApiKey') || '';
-        }
-        return '';
-    });
+    // Initialize API key state as an empty string.
+    const [apiKey, setApiKey] = useState('');
 
+    // This useEffect hook runs only on the client-side after the component mounts.
+    // This is the correct way to access localStorage in Next.js.
+    useEffect(() => {
+        const storedApiKey = localStorage.getItem('geminiApiKey');
+        if (storedApiKey) {
+            setApiKey(storedApiKey);
+        }
+    }, []);
+
+
+    // Handle API key changes and save to localStorage
     const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newKey = e.target.value;
         setApiKey(newKey);
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('geminiApiKey', newKey);
-        }
+        localStorage.setItem('geminiApiKey', newKey);
     };
 
     const handleImageChange = (file: File | undefined) => {
@@ -347,8 +360,3 @@ const PerformanceGuide: FC = () => {
         </div>
     );
 };
-
-// Simple fade-in animation
-const style = document.createElement('style');
-style.textContent = ` @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } .animate-fade-in { animation: fade-in 0.5s ease-out forwards; } `;
-document.head.append(style);
