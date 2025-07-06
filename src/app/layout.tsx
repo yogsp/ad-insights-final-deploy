@@ -5,7 +5,7 @@ import '@/styles/globals.css';
 
 // This is the correct place to set the page title and favicon for a Next.js app.
 export const metadata: Metadata = {
-  title: 'AdInsights', // Sets the browser tab title
+  title: 'AdInsight', // Sets the browser tab title
   description: 'AI-powered ad analysis by Stratuscast Phils., Inc.',
   icons: {
     icon: 'https://i.imgur.com/u8y10AV.png', // URL for the new favicon
