@@ -201,7 +201,7 @@ const AdAnalyzer: FC = () => {
         } else {
             platformContext = "The ad is a display/banner ad (e.g., Google Display Network). Prioritize analysis on its ability to grab attention instantly, the clarity of a single call-to-action, and effectiveness in a small format.";
         }
-        return `As an expert marketing analyst, analyze the provided ad image. ${platformContext} Your response must be a valid JSON object. The JSON should strictly follow this schema, with all fields present: {"overallScore": number, "oneLiner": "string", "strengths": ["string"], "improvements": ["string"], "analysis": {"colorPalette": {"vibe": "string", "recommendation": "string"}, "subjectAndComposition": {"focus": "string", "type": "string", "recommendation": "string"}, "typographyAndText": {"clarity": "string", "hierarchy": "string", "recommendation": "string"}, "brandIntegration": {"logoVisibility": "string", "recommendation": "string"}, "callToAction": {"clarity": "string", "recommendation": "string"}}}`;
+        return `As an expert marketing analyst, analyze the provided ad image. ${platformContext} Your response must be a valid JSON object. Provide a score from 0.0 to 10.0. The JSON should strictly follow this schema, with all fields present: {"overallScore": number, "oneLiner": "string", "strengths": ["string"], "improvements": ["string"], "analysis": {"colorPalette": {"vibe": "string", "recommendation": "string"}, "subjectAndComposition": {"focus": "string", "type": "string", "recommendation": "string"}, "typographyAndText": {"clarity": "string", "hierarchy": "string", "recommendation": "string"}, "brandIntegration": {"logoVisibility": "string", "recommendation": "string"}, "callToAction": {"clarity": "string", "recommendation": "string"}}}`;
     };
 
     const handleAnalyze = async () => {
@@ -299,15 +299,15 @@ const PlatformButton: FC<PlatformButtonProps> = ({ label, icon, isActive, onClic
 
 const scoreColor = (score: number | null) => {
     if (score === null) return 'text-slate-500 bg-slate-50';
-    if (score >= 85) return 'text-green-500 bg-green-50';
-    if (score >= 60) return 'text-yellow-500 bg-yellow-50';
+    if (score >= 8.5) return 'text-green-500 bg-green-50';
+    if (score >= 6.0) return 'text-yellow-500 bg-yellow-50';
     return 'text-red-500 bg-red-50';
 }
 
 const OverallScore: FC<OverallScoreProps> = ({ score, oneLiner }) => (
     <div className="text-center p-6 bg-slate-50 rounded-xl">
         <p className="font-semibold text-slate-600 mb-2">Predicted Performance Score</p>
-        <div className={`mx-auto w-28 h-28 rounded-full flex items-center justify-center ${scoreColor(score)}`}><span className="text-5xl font-bold">{score || 0}</span><span className="text-2xl font-semibold mt-2">/100</span></div>
+        <div className={`mx-auto w-28 h-28 rounded-full flex items-center justify-center ${scoreColor(score)}`}><span className="text-5xl font-bold">{score !== null ? score.toFixed(1) : '0.0'}</span><span className="text-2xl font-semibold mt-2">/10</span></div>
         <p className="text-slate-700 font-semibold mt-4 text-lg italic">"{oneLiner || 'Analysis summary unavailable.'}"</p>
     </div>
 );
